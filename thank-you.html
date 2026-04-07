@@ -1,0 +1,65 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:rgba(0,0,0,.45);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.modal-header{background:#131c30;padding:1.75rem 2rem}
+.modal-header .icon{width:44px;height:44px;border-radius:50%;background:rgba(54,116,245,.2);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.modal-header .icon svg{width:20px;height:20px;stroke:#4d8bf5;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.modal-header h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.modal-header p{font-size:13px;color:#8fa3c8}
+.modal-body{padding:1.75rem 2rem 2rem}
+.message{background:#f5f7ff;border-left:3px solid #3674f5;border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:1.5rem}
+.message p{font-size:14px;color:#2a3550;line-height:1.7}
+.service-badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:1rem}
+.badge-lbox{background:#eef3ff;color:#3674f5}
+.badge-casenote{background:#eefaf5;color:#1a9e6e}
+.timer{font-size:12px;color:#aab2c8;text-align:center;margin-bottom:1rem}
+.timer span{font-weight:600;color:#3674f5}
+.btn{display:block;width:100%;background:#3674f5;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn:hover{background:#2560e0}
+</style>
+
+<div class="modal">
+  <div class="modal-header">
+    <div class="icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>신청이 완료되었습니다</h2>
+    <p id="sub">신청을 접수하였습니다</p>
+  </div>
+  <div class="modal-body">
+    <div id="badge" class="service-badge"></div>
+    <div class="message">
+      <p>신청 후 <strong>영업일 기준 1~2일 이내</strong>에 계약 담당자를 통해 계약서를 송부드릴 예정입니다.</p>
+    </div>
+    <div class="timer">잠시 후 홈페이지로 이동합니다 (<span id="count">5</span>초)</div>
+    <button class="btn" id="btn">지금 바로 이동하기 →</button>
+  </div>
+</div>
+
+<script>
+const p = new URLSearchParams(location.search);
+const svc = p.get('service');
+const urls = {lbox:'https://www.lbox.kr', casenote:'https://www.casenote.kr'};
+const names = {lbox:'엘박스', casenote:'케이스노트'};
+const badgeClass = {lbox:'badge-lbox', casenote:'badge-casenote'};
+
+const target = urls[svc] || 'https://www.lbox.kr';
+const name = names[svc] || '';
+
+if(name){
+  const badge = document.getElementById('badge');
+  badge.textContent = name;
+  badge.classList.add(badgeClass[svc]);
+  document.getElementById('sub').textContent = name + ' 신청을 접수하였습니다';
+}
+
+document.getElementById('btn').onclick = () => location.href = target;
+
+let t = 5;
+const timer = setInterval(() => {
+  t--;
+  document.getElementById('count').textContent = t;
+  if(t <= 0){ clearInterval(timer); location.href = target; }
+}, 1000);
+</script>
